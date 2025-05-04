@@ -11,9 +11,17 @@ export class CodeEditor {
         this.pfx = editor.getConfig('stylePrefix');
         this.opts = opts;
         this.canvas = this.findWithinEditor(`.${this.pfx}cv-canvas`);
-        this.panelViews = opts.appendTo ? this.$(opts.appendTo) :
-            this.findWithinEditor(`.${this.pfx}pn-${opts.panelId}`);
+        this._panelViews = [];
         this.isShowing = true;
+    }
+
+    // implemented as getter to avoid racing the creation of the panel container
+    get panelViews() {
+      if (this._panelViews.length === 0) {
+        this._panelViews = this.opts.appendTo ? this.$(this.opts.appendTo) :
+            this.findWithinEditor(`.${this.pfx}pn-${this.opts.panelId}`);
+      }
+      return this._panelViews
     }
 
     findPanel() {
